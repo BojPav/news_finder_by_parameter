@@ -21,12 +21,21 @@
     <h1>Hello !</h1>
     <h3>Upisite pojam za pretragu:</h3>
     <div class="input">
-    <form method="post" action="/">
+    <form method="post" action="/pretraga">
         <input type="text" class="form-control" placeholder="Upisite pojam za pretragu..." aria-describedby="sizing-addon1" name="trazeni_pojam">
-        <br>
         <br>
         <button class="btn btn-default" type="submit">Trazi !</button>
     </form>
+        <br>
+        <br>
+        <p><strong>Web strane ukljucene u pretragu</strong></p>
+        <img src="http://www.spottero.com/wp-content/uploads/2016/08/Delo-si.gif" style="width:130px;height:100px;">
+        <img src="https://dnevnik.si/i/as/2012/11/28/676185.jpg" style="width:130px;height:100px;">
+        <img src="http://euranetplus-inside.eu/wp-content/uploads/2015/09/RTV-SLO-Slovenian_avatar_1441481523-200x200.png" style="width:130px;height:100px;">
+        <img src="http://www.tsmedia.si/wp-content/uploads/2015/04/SiolNET_300w2.jpg" style="width:130px;height:100px;">
+        <img src="https://lh3.ggpht.com/6x4lOHRQex-3cjlQ99U0pw2NjAPGzBbg0y-gjFKXBlcaT78yBQCuFGv4k41C3Ki8yqy9=w300" style="width:130px;height:100px;">
     </div>
+    <br>
+    <h3>{{ result }}</h3>
 </body>
 </html>

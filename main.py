@@ -1,10 +1,15 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 import os
 import jinja2
 import webapp2
-import requests
+import urllib2
 import webbrowser
-#   from BeautifulSoup import BeautifulSoup
+
+import sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
 
 template_dir = os.path.join(os.path.dirname(__file__), "templates")
 jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader(template_dir), autoescape=False)
@@ -32,55 +37,59 @@ class BaseHandler(webapp2.RequestHandler):
 class MainHandler(BaseHandler):
     def get(self):
         return self.render_template("hello.html")
+
+
+class PretragaHandler(BaseHandler):
     def post(self):
 
         trazeni_pojam = self.request.get("trazeni_pojam")
 
-        delo = requests.get("http://www.delo.si/svet")
-        dnevnik = requests.get("https://www.dnevnik.si/svet")
-        vecer = requests.get("http://www.vecer.com/rubrika/svet")
-        rtvslo = requests.get("http://www.rtvslo.si/svet/")
-        siol = requests.get("http://siol.net/novice/svet")
-        ur24 = requests.get("http://www.24ur.com/novice/svet/")
+        delo = urllib2.urlopen("http://www.delo.si/svet")
+        dnevnik = urllib2.urlopen("https://www.dnevnik.si/svet")
 
-        #trazeni_pojam = raw_input("Upisite pojam---> ")
+        rtvslo = urllib2.urlopen("http://www.rtvslo.si/svet/")
+        siol = urllib2.urlopen("http://siol.net/novice/svet")
+        ur24 = urllib2.urlopen("http://www.24ur.com/novice/svet/")
 
-        if trazeni_pojam in delo.text:
-            print "Pronadjen pojam..."
-            print "Otvaram DELO.SI..."
-            webbrowser.open("http://www.delo.si/svet")
 
-        if trazeni_pojam in dnevnik.text:
-            print "Pronadjen pojam..."
-            print "Otvaram DNEVNIK.SI..."
-            webbrowser.open("https://www.dnevnik.si/svet")
+        delo_text = delo.read()
+        dnevnik_text = dnevnik.read()
 
-        if trazeni_pojam in vecer.text:
-            print "Pronadjen pojam..."
-            print "Otvaram VECER.COM..."
-            webbrowser.open("http://www.vecer.com/rubrika/svet")
+        rtvslo_text = rtvslo.read()
+        siol_text = siol.read()
+        ur24_text = ur24.read()
 
-        if trazeni_pojam in rtvslo.text:
-            print "Pronadjen pojam..."
-            print "Otvaram RTV.SLO..."
-            webbrowser.open("http://www.rtvslo.si/svet/")
+        sajtovi = []
 
-        if trazeni_pojam in siol.text:
-            print "Pronadjen pojam..."
-            print "Otvaram SIOL.NET..."
-            webbrowser.open("http://siol.net/novice/svet")
+        result = "Nije pronadjena nijedna vest za zadati pojam..."
 
-        if trazeni_pojam in ur24.text:
-            print "Pronadjen pojam..."
-            print "Otvaram 24UR.COM..."
-            webbrowser.open("http://www.24ur.com/novice/svet/")
+        params = {"result": result,"sajtovi": sajtovi}
 
-        else:
-            print "nema trazenih pojmova..."
+        if trazeni_pojam in delo_text:
+            sajtovi.append("http://www.delo.si/svet")
 
-        print "Provera zavrsena"
+        if trazeni_pojam in dnevnik_text:
+            sajtovi.append("https://www.dnevnik.si/svet")
+
+        if trazeni_pojam in rtvslo_text:
+            sajtovi.append("http://www.rtvslo.si/svet/")
+
+        if trazeni_pojam in siol_text:
+            sajtovi.append("http://siol.net/novice/svet")
+
+        if trazeni_pojam in ur24_text:
+            sajtovi.append("http://www.24ur.com/novice/svet/")
+
+        #else:
+            #return self.render_template("hello.html", params=params)
+        if len(sajtovi) < 1:
+            return self.write("Nijedan sajt ne sadrzi zadati pojam")
+
+        return self.render_template("pretraga.html", params=params)
 
 
 app = webapp2.WSGIApplication([
     webapp2.Route('/', MainHandler),
+    webapp2.Route('/pretraga', PretragaHandler),
 ], debug=True)
+

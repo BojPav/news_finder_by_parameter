@@ -1,4 +1,9 @@
 body {
-    background-color: grey;
+    background-color: #f7f7f7;
     text-align: center;
+}
+
+.input {
+    width: 500px;
+    margin: auto;
 }
